@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Performance Metrics</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        body.report-body {
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+        .report-header {
+            display: flex;
+            align-items: center;
+            background-color: #1b1e3d;
+            padding: 10px 20px;
+            color: white;
+            flex-shrink: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .report-header img.report-logo {
+            height: 40px;
+            width: auto;
+            margin-right: 15px;
+        }
+        .report-header-icons {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+        .report-header-icons img.report-icon {
+            height: 60px;
+            width: auto;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+        .report-header h1 {
+            font-size: 28px;
+            margin: 0;
+            flex-grow: 1;
+            text-align: center;
+        }
+        .report-content-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        .report-sidebar {
+            width: 250px;
+            background-color: #1b1e3d;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+        .report-sidebar h2 {
+            color: white;
+            font-family: 'Roboto', Arial, sans-serif;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-align: center;
+			font-size: 14px; /* Reduced font size */
+
+        }
+        .report-sidebar button {
+            background-color: #fab724;
+            color: #1b1e3d;
+            border: none;
+   			padding: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            font-family: 'Roboto', Arial, sans-serif;
+            font-weight: 700;
+            text-align: center; /* Center align text */
+    		width: 100%; /* Make all buttons the same width */
+    		box-sizing: border-box; /* Prevent padding from affecting width */
+        }
+        .report-sidebar button:hover, .report-sidebar button.active {
+            background-color: #131633;
+            color: white;
+        }
+        .report-main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        #reportFrame {
+            display: block;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        #reportErrorMessage {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            color: red;
+        }
+        #reportPasswordOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999;
+        }
+        #reportPasswordOverlay input {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            width: 200px;
+            border-radius: 5px;
+            border: none;
+        }
+        #reportPasswordOverlay button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #fab724;
+            color: #1b1e3d;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .report-menu-header {
+            background-color: #fab724;
+            color: #1b1e3d;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            font-family: 'Roboto', Arial, sans-serif;
+            font-weight: 700;
+            text-align: left;
+        }
+        .report-menu-header:hover {
+            background-color: #131633;
+            color: white;
+        }
+        .report-menu-items {
+            display: none;
+            margin-left: 15px;
+        }
+        .report-menu-items button {
+            background-color: #131633;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            font-family: 'Roboto', Arial, sans-serif;
+            font-weight: 700;
+            text-align: left;
+        }
+        .report-menu-items button:hover {
+            background-color: #fab724;
+            color: #1b1e3d;
+        }
+        .report-menu.open .report-menu-items {
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body class="report-body">
+
+    <!-- Password Protection Overlay -->
+    <div id="reportPasswordOverlay">
+        <input type="password" id="reportPasswordInput" placeholder="Enter Password">
+        <button onclick="reportCheckPassword()">Submit</button>
+    </div>
+
+    <!-- Header -->
+    <div class="report-header">
+        <img src="https://eatechnology.com/media/qhshbtrd/visnet-logo-outlined-copy-2048x610.png" alt="Company Logo" class="report-logo">
+        <h1>Marketing Performance Metrics</h1>
+        <div class="report-header-icons">
+            <img src="https://eatechnology.com/media/0idfw1fq/kpi-removebg-preview.png" alt="KPI" title="Go to KPI Report" class="report-icon" onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/47951ca4-da97-4c84-b846-e37c0239856f/page/p_jlgy4fn6md', null, 'KPI Report')">
+        </div>
+    </div>
+
+    <!-- Content Container -->
+    <div class="report-content-container">
+        <!-- Sidebar -->
+        <div class="report-sidebar">
+            <h2>Quick Navigation</h2>
+            <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/47951ca4-da97-4c84-b846-e37c0239856f/page/p_jlgy4fn6md/', this, 'KPI & Key Insights')">
+                KPI &amp; Key Insights
+            </button>
+            <div class="report-menu">
+                <button class="report-menu-header">Campaigns</button>
+                <div class="report-menu-items">
+                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/7a8ab4f6-03ea-4f23-817b-5573bf272e87/page/p_htt9lurfld/', this, 'ALVIN Reclose')">ALVIN Reclose</button>
+                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/7a8ab4f6-03ea-4f23-817b-5573bf272e87/page/p_9sw0vuyykd/', this, 'APP Campaigns')">APP Campaigns</button>
+                </div>
+            </div>
+            <div class="report-menu">
+                <button class="report-menu-header">Website</button>
+                <div class="report-menu-items">
+                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_gadygi8ggd/', this, 'Google Analytics')">Google Analytics</button>
+                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_72i2wokhhd/', this, 'Form Submissions')">Form Submissions</button>
+                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_uxpmtfpfld/', this, 'Country Specific Web Traffic')">Country Specific Web Traffic</button>
+                </div>
+            </div>
+            <div class="report-menu">
+                <button class="report-menu-header">SEO</button>
+                <div class="report-menu-items">
+                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ed48d87a-486f-4500-963f-c1ad286cbe93/page/p_d3fdz3zqgd/', this, 'Search Analytics')">Search Analytics</button>
+                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ed48d87a-486f-4500-963f-c1ad286cbe93/page/p_qjlg7ycbad/', this, 'Keyword Position Tracker')">Keyword Position Tracker</button>
+                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ed48d87a-486f-4500-963f-c1ad286cbe93/page/p_1yqzph3vld/', this, 'Domain Authority')">Domain Authority</button>
+                </div>
+            </div>
+            <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/78376592-1e70-407c-8e8d-7bf6c085c5cb/page/p_sb1dx8khhd/', this, 'Email')">Email</button>
+            <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/78376592-1e70-407c-8e8d-7bf6c085c5cb/page/p_vbl76okhhd/', this, 'Events')">Events</button>
+            <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/78376592-1e70-407c-8e8d-7bf6c085c5cb/page/p_81eydpkhhd/', this, 'PR')">PR</button>
+            <div class="report-menu">
+                <button class="report-menu-header">PPC</button>
+                <div class="report-menu-items">
+                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/86af7bb7-cc68-4801-aa8f-ad64672f6971/page/p_7f2aw8gugd/', this, 'Google')">Google</button>
+                </div>
+            </div>
+            <div class="report-menu">
+                <button class="report-menu-header">Social Media</button>
+                <div class="report-menu-items">
+                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/78376592-1e70-407c-8e8d-7bf6c085c5cb/page/p_xuif67zced/', this, 'Organic')">Organic</button>
+                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/86af7bb7-cc68-4801-aa8f-ad64672f6971/page/p_6nz7z4i1fd/', this, 'Paid - LinkedIn')">Paid - LinkedIn</button>
+                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/86af7bb7-cc68-4801-aa8f-ad64672f6971/page/p_5ma47ri1fd/', this, 'Paid - Meta')">Paid - Meta</button>
+                </div>
+            </div>
+			<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/7a8ab4f6-03ea-4f23-817b-5573bf272e87/page/p_wh1z31a8md/', this, 'OKR Tracker')">
+                OKR Tracker
+            </button>
+			<div class="report-menu">
+                <button class="report-menu-header">Continuous Improvement</button>
+                <div class="report-menu-items">
+                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/5e6f8143-db4c-48fd-8e2e-701ccc1f39ea/page/p_zkz4ix98md/', this, 'Monthly Commentary')">Monthly Commentary</button>
+                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/5e6f8143-db4c-48fd-8e2e-701ccc1f39ea/page/p_gc917z98md/', this, 'Tasks Completed')">Tasks Completed</button>
+                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/5e6f8143-db4c-48fd-8e2e-701ccc1f39ea/page/p_hak09z98md/', this, 'Next Month\'s Tasks')">Next Month's Tasks</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="report-main-content">
+            <iframe id="reportFrame" src="https://lookerstudio.google.com/embed/reporting/47951ca4-da97-4c84-b846-e37c0239856f/page/p_jlgy4fn6md" onerror="reportShowErrorMessage()"></iframe>
+            <div id="reportErrorMessage">
+                Oops! The report could not be loaded. Please check if the report is shared publicly or try again later.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const reportPASSWORD = "yourpassword"; // Set your password here
+
+        function reportCheckPassword() {
+            const input = document.getElementById('reportPasswordInput').value;
+            if (input === reportPASSWORD) {
+                document.getElementById('reportPasswordOverlay').style.display = 'none';
+            } else {
+                alert('Incorrect password. Please try again.');
+            }
+        }
+
+        function reportLoadReport(reportUrl, button, title) {
+            const iframe = document.getElementById('reportFrame');
+            const errorMessage = document.getElementById('reportErrorMessage');
+            const buttons = document.querySelectorAll('.report-sidebar button');
+            
+            errorMessage.style.display = 'none';
+            iframe.src = reportUrl;
+
+            if (button) {
+                buttons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+            }
+
+            document.title = title;
+        }
+
+        function reportShowErrorMessage() {
+            const errorMessage = document.getElementById('reportErrorMessage');
+            errorMessage.style.display = 'block';
+        }
+
+        document.querySelectorAll('.report-menu-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const menu = header.parentElement;
+                menu.classList.toggle('open');
+            });
+        });
+    </script>
+</body>
+</html>
