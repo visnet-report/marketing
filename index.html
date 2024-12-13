@@ -180,6 +180,26 @@
             display: flex;
             flex-direction: column;
         }
+		/* Highlight for active buttons */
+.report-sidebar button.active {
+    border: 2px solid #fab724; /* Gold color for highlight */
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(250, 183, 36, 0.7);
+}
+
+/* Highlight for open menus */
+.report-menu.open > .report-menu-header {
+    border: 2px solid #fab724; /* Gold color for open menu */
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(250, 183, 36, 0.7);
+}
+
+/* Highlight on hover for better accessibility */
+.report-sidebar button:hover, .report-menu-header:hover {
+    border: 2px solid #131633; /* Dark border on hover */
+    box-shadow: 0 0 10px rgba(19, 22, 51, 0.7);
+}
+
     </style>
 </head>
 <body class="report-body">
@@ -294,12 +314,43 @@
             errorMessage.style.display = 'block';
         }
 
-        document.querySelectorAll('.report-menu-header').forEach(header => {
-            header.addEventListener('click', () => {
-                const menu = header.parentElement;
-                menu.classList.toggle('open');
+        document.querySelectorAll('.report-menu-header, .report-sidebar button').forEach(element => {
+    element.addEventListener('click', (event) => {
+        const menu = element.parentElement;
+        const allMenus = document.querySelectorAll('.report-menu');
+        const buttons = document.querySelectorAll('.report-sidebar button');
+
+        // Handle menu headers
+        if (element.classList.contains('report-menu-header')) {
+            // Close all other menus
+            allMenus.forEach(otherMenu => {
+                if (otherMenu !== menu) {
+                    otherMenu.classList.remove('open');
+                }
             });
-        });
+            // Toggle the clicked menu
+            menu.classList.toggle('open');
+        } else {
+            // Handle button clicks
+            buttons.forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        // Stop submenu from closing on button click
+        if (element.closest('.report-menu-items')) {
+            event.stopPropagation();
+        }
+
+        // Highlight the parent menu if submenu button is clicked
+        if (menu && menu.classList.contains('report-menu')) {
+            document.querySelectorAll('.report-menu-header').forEach(header => header.classList.remove('active'));
+            menu.querySelector('.report-menu-header').classList.add('active');
+        }
+    });
+});
+
+
+
     </script>
 </body>
 </html>
