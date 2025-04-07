@@ -19,7 +19,7 @@
         .report-header {
             display: flex;
             align-items: center;
-            background-color: #1b1e3d;
+            background-color: #220639;
             padding: 10px 20px;
             color: white;
             flex-shrink: 0;
@@ -27,7 +27,7 @@
             box-sizing: border-box;
         }
         .report-header img.report-logo {
-            height: 40px;
+            height: 50px;
             width: auto;
             margin-right: 15px;
         }
@@ -55,7 +55,7 @@
         }
         .report-sidebar {
             width: 250px;
-            background-color: #1b1e3d;
+            background-color: #220639;
             color: white;
             display: flex;
             flex-direction: column;
@@ -73,8 +73,8 @@
 
         }
         .report-sidebar button {
-            background-color: #fab724;
-            color: #1b1e3d;
+            background-color: #00AAE4;
+            color: #220639;
             border: none;
    			padding: 5px;
             cursor: pointer;
@@ -134,14 +134,14 @@
         #reportPasswordOverlay button {
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #fab724;
-            color: #1b1e3d;
+            background-color: #00AAE4;
+            color: #220639;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
         .report-menu-header {
-            background-color: #fab724;
+            background-color: #00AAE4;
             color: #1b1e3d;
             border: none;
             padding: 10px 15px;
@@ -173,7 +173,7 @@
             text-align: left;
         }
         .report-menu-items button:hover {
-            background-color: #fab724;
+            background-color: #00AAE4;
             color: #1b1e3d;
         }
         .report-menu.open .report-menu-items {
@@ -182,14 +182,14 @@
         }
 		/* Highlight for active buttons */
 .report-sidebar button.active {
-    border: 2px solid #fab724; /* Gold color for highlight */
+    border: 2px solid #00AAE4; /* Gold color for highlight */
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(250, 183, 36, 0.7);
 }
 
 /* Highlight for open menus */
 .report-menu.open > .report-menu-header {
-    border: 2px solid #fab724; /* Gold color for open menu */
+    border: 2px solid #00AAE4; /* Gold color for open menu */
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(250, 183, 36, 0.7);
 }
@@ -212,11 +212,8 @@
 
     <!-- Header -->
     <div class="report-header">
-        <img src="https://eatechnology.com/media/qhshbtrd/visnet-logo-outlined-copy-2048x610.png" alt="Company Logo" class="report-logo">
+        <img src="https://eatechnology.com/assets/img/logo.svg" alt="Company Logo" class="report-logo">
         <h1>Marketing Performance Metrics</h1>
-        <div class="report-header-icons">
-            <img src="https://eatechnology.com/media/0idfw1fq/kpi-removebg-preview.png" alt="KPI" title="Go to KPI Report" class="report-icon" onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/47951ca4-da97-4c84-b846-e37c0239856f/page/p_jlgy4fn6md', null, 'KPI Report')">
-        </div>
     </div>
 
     <!-- Content Container -->
@@ -224,9 +221,16 @@
         <!-- Sidebar -->
         <div class="report-sidebar">
             <h2>Quick Navigation</h2>
-            <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/47951ca4-da97-4c84-b846-e37c0239856f/page/p_jlgy4fn6md/', this, 'KPI & Key Insights')">
-                KPI &amp; Key Insights
-            </button>
+            
+			<div class="report-menu">
+                <button class="report-menu-header">KPI &amp; Key Insights</button>
+                <div class="report-menu-items">
+                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_gqqz5fuard', this, 'AM FY 26')">AM FY 26</button>
+					<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_k9c9t7qbrd/', this, 'AM FY 25')">AM FY 25</button>
+                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/fcceb078-3b7c-46b3-ba4d-355d6efc110c/page/p_jlgy4fn6md', this, 'VisNet FY 26')">VisNet FY 26</button>
+		    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/47951ca4-da97-4c84-b846-e37c0239856f/page/p_jlgy4fn6md/', this, 'VisNet FY 25')">VisNet FY 25</button>
+                </div>
+            </div>
             <div class="report-menu">
                 <button class="report-menu-header">Campaigns</button>
                 <div class="report-menu-items">
@@ -278,7 +282,7 @@
 
         <!-- Main Content -->
         <div class="report-main-content">
-            <iframe id="reportFrame" src="https://lookerstudio.google.com/embed/reporting/47951ca4-da97-4c84-b846-e37c0239856f/page/p_jlgy4fn6md" onerror="reportShowErrorMessage()"></iframe>
+            <iframe id="reportFrame" src="https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_pp46nz7h9c/" onerror="reportShowErrorMessage()"></iframe>
             <div id="reportErrorMessage">
                 Oops! The report could not be loaded. Please check if the report is shared publicly or try again later.
             </div>
