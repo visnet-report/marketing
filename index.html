@@ -1,375 +1,395 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marketing Performance Metrics</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marketing Performance Metrics</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
-        body.report-body {
-            font-family: 'Roboto', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            box-sizing: border-box;
-        }
-        .report-header {
-            display: flex;
-            align-items: center;
-            background-color: #220639;
-            padding: 10px 20px;
-            color: white;
-            flex-shrink: 0;
-            width: 100%;
-            box-sizing: border-box;
-        }
-        .report-header img.report-logo {
-            height: 50px;
-            width: auto;
-            margin-right: 15px;
-        }
-        .report-header-icons {
-            display: flex;
-            align-items: center;
-            margin-left: auto;
-        }
-        .report-header-icons img.report-icon {
-            height: 60px;
-            width: auto;
-            margin: 0 10px;
-            cursor: pointer;
-        }
-        .report-header h1 {
-            font-size: 28px;
-            margin: 0;
-            flex-grow: 1;
-            text-align: center;
-        }
-        .report-content-container {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-        .report-sidebar {
-            width: 250px;
-            background-color: #220639;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            padding: 10px;
-            box-sizing: border-box;
-            flex-shrink: 0;
-	overflow-y: auto; 
-    max-height: 100vh;
-        }
-        .report-sidebar h2 {
-            color: white;
-            font-family: 'Roboto', Arial, sans-serif;
-            font-weight: 700;
-            margin-bottom: 10px;
-            text-align: center;
-			font-size: 14px; /* Reduced font size */
-
-        }
-        .report-sidebar button {
-            background-color: #00AAE4;
-            color: #220639;
-            border: none;
-   			padding: 5px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-bottom: 5px;
-            font-family: 'Roboto', Arial, sans-serif;
-            font-weight: 700;
-            text-align: center; /* Center align text */
-    		width: 100%; /* Make all buttons the same width */
-    		box-sizing: border-box; /* Prevent padding from affecting width */
-        }
-        .report-sidebar button:hover, .report-sidebar button.active {
-            background-color: #131633;
-            color: white;
-        }
-        .report-main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-        }
-        #reportFrame {
-            display: block;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        #reportErrorMessage {
-            display: none;
-            text-align: center;
-            margin-top: 20px;
-            font-size: 18px;
-            color: red;
-        }
-        #reportPasswordOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.9);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            z-index: 9999;
-        }
-        #reportPasswordOverlay input {
-            padding: 10px;
-            font-size: 16px;
-            margin-bottom: 10px;
-            width: 200px;
-            border-radius: 5px;
-            border: none;
-        }
-        #reportPasswordOverlay button {
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #00AAE4;
-            color: #220639;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .report-menu-header {
-            background-color: #00AAE4;
-            color: #1b1e3d;
-            border: none;
-            padding: 10px 15px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-bottom: 5px;
-            font-family: 'Roboto', Arial, sans-serif;
-            font-weight: 700;
-            text-align: left;
-        }
-        .report-menu-header:hover {
-            background-color: #131633;
-            color: white;
-        }
-        .report-menu-items {
-            display: none;
-            margin-left: 15px;
-        }
-        .report-menu-items button {
-            background-color: #131633;
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            cursor: pointer;
-            border-radius: 5px;
-            margin-bottom: 5px;
-            font-family: 'Roboto', Arial, sans-serif;
-            font-weight: 700;
-            text-align: left;
-        }
-        .report-menu-items button:hover {
-            background-color: #00AAE4;
-            color: #1b1e3d;
-        }
-        .report-menu.open .report-menu-items {
-            display: flex;
-            flex-direction: column;
-        }
-		/* Highlight for active buttons */
-.report-sidebar button.active {
-    border: 2px solid #00AAE4; /* Gold color for highlight */
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(250, 183, 36, 0.7);
-}
-
-/* Highlight for open menus */
-.report-menu.open > .report-menu-header {
-    border: 2px solid #00AAE4; /* Gold color for open menu */
-    border-radius: 5px;
-    box-shadow: 0 0 10px rgba(250, 183, 36, 0.7);
-}
-
-/* Highlight on hover for better accessibility */
-.report-sidebar button:hover, .report-menu-header:hover {
-    border: 2px solid #131633; /* Dark border on hover */
-    box-shadow: 0 0 10px rgba(19, 22, 51, 0.7);
-}
-
-    </style>
+    body.report-body {
+      font-family: 'Roboto', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      box-sizing: border-box;
+    }
+    .report-header {
+      display: flex;
+      align-items: center;
+      background-color: #220639;
+      padding: 10px 20px;
+      color: white;
+      flex-shrink: 0;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .report-header img.report-logo {
+      height: 50px;
+      width: auto;
+      margin-right: 15px;
+    }
+    .report-header h1 {
+      font-size: 28px;
+      margin: 0;
+      flex-grow: 1;
+      text-align: center;
+    }
+    .toggle-sidebar-btn {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+    .report-content-container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+    .report-sidebar {
+      width: 250px;
+      background-color: #220639;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 10px;
+      box-sizing: border-box;
+      flex-shrink: 0;
+      overflow-y: auto;
+      max-height: 100vh;
+      transition: width 0.3s ease;
+    }
+    .report-sidebar.collapsed {
+      width: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .report-sidebar h2 {
+      color: white;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+    .report-sidebar button {
+      background-color: #00AAE4;
+      color: #220639;
+      border: none;
+      padding: 5px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-bottom: 5px;
+      font-weight: 700;
+      text-align: left;
+      width: 100%;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+    }
+    .report-sidebar button i {
+      margin-right: 8px;
+    }
+    .report-sidebar button[title]:hover::after {
+      content: attr(title);
+      position: absolute;
+      left: 105%;
+      background: #333;
+      color: #fff;
+      padding: 5px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .report-sidebar button:hover, .report-sidebar button.active {
+      background-color: #131633;
+      color: white;
+    }
+    .report-main-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    #reportFrame {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    #loadingIndicator {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 20px;
+      color: #00AAE4;
+      display: none;
+    }
+    #reportErrorMessage {
+      display: none;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+      color: red;
+    }
+    #reportPasswordOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 9999;
+    }
+    #reportPasswordOverlay input {
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 10px;
+      width: 200px;
+      border-radius: 5px;
+      border: none;
+    }
+    #reportPasswordOverlay button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #00AAE4;
+      color: #220639;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .report-menu-header {
+      background-color: #00AAE4;
+      color: #1b1e3d;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-bottom: 5px;
+      font-weight: 700;
+      text-align: left;
+    }
+    .report-menu-header:hover {
+      background-color: #131633;
+      color: white;
+    }
+    .report-menu-items {
+      display: none;
+      margin-left: 15px;
+    }
+    .report-menu-items button {
+      background-color: #131633;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-bottom: 5px;
+      font-weight: 700;
+      text-align: left;
+    }
+    .report-menu-items button:hover {
+      background-color: #00AAE4;
+      color: #1b1e3d;
+    }
+    .report-menu.open .report-menu-items {
+      display: flex;
+      flex-direction: column;
+    }
+    .report-sidebar button.active {
+      border: 2px solid #00AAE4;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(250, 183, 36, 0.7);
+    }
+    .report-menu.open > .report-menu-header {
+      border: 2px solid #00AAE4;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(250, 183, 36, 0.7);
+    }
+    .report-sidebar button:hover, .report-menu-header:hover {
+      border: 2px solid #131633;
+      box-shadow: 0 0 10px rgba(19, 22, 51, 0.7);
+    }
+    @media (max-width: 768px) {
+      .report-sidebar {
+        position: absolute;
+        z-index: 10;
+        height: 100%;
+        background: #220639;
+      }
+    }
+    #feedbackLink {
+      text-align: center;
+      margin-top: 20px;
+      color: #00AAE4;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body class="report-body">
+  <div id="reportPasswordOverlay">
+    <input type="password" id="reportPasswordInput" placeholder="Enter Password">
+    <button onclick="reportCheckPassword()">Submit</button>
+  </div>
 
-    <!-- Password Protection Overlay -->
-    <div id="reportPasswordOverlay">
-        <input type="password" id="reportPasswordInput" placeholder="Enter Password">
-        <button onclick="reportCheckPassword()">Submit</button>
+  <div class="report-header">
+    <button class="toggle-sidebar-btn" onclick="toggleSidebar()">
+      <i class="fas fa-bars"></i>
+    </button>
+    <img src="https://eatechnology.com/assets/img/logo.svg" alt="Company Logo" class="report-logo">
+    <h1>Marketing Activity Dashboard</h1>
+  </div>
+
+  <div class="report-content-container">
+    <div class="report-sidebar" id="sidebar">
+  <h2>Quick Navigation</h2>
+  <div class="report-menu">
+    <button class="report-menu-header"><i class="fas fa-chart-line"></i> KPI &amp; Key Insights</button>
+    <div class="report-menu-items">
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_k9c9t7qbrd/', this, 'AM FY 26')">AM FY 26</button>
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/fcceb078-3b7c-46b3-ba4d-355d6efc110c/page/p_jlgy4fn6md', this, 'VisNet FY 26')">VisNet FY 26</button>
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_gqqz5fuard', this, 'AM FY 25')">AM FY 25</button>
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/47951ca4-da97-4c84-b846-e37c0239856f/page/p_jlgy4fn6md/', this, 'VisNet FY 25')">VisNet FY 25</button>
+    </div>
+  </div>
+  <div class="report-menu">
+    <button class="report-menu-header"><i class="fas fa-bullhorn"></i> Campaigns</button>
+    <div class="report-menu-items">
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/7a8ab4f6-03ea-4f23-817b-5573bf272e87/page/p_dijrr91ykd/', this, 'ALVIN Reclose')">ALVIN Reclose</button>
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/7a8ab4f6-03ea-4f23-817b-5573bf272e87/page/p_9sw0vuyykd/', this, 'APP Campaigns')">APP Campaigns</button>
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/7a8ab4f6-03ea-4f23-817b-5573bf272e87/page/p_46pk1vxtnd/', this, 'WinDebut/VisNet Design')">WinDebut/VisNet Design</button>
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/7a8ab4f6-03ea-4f23-817b-5573bf272e87/page/p_htt9lurfld/', this, 'Campaign Source/Conversions')">Campaign Source/Conversions</button>
+    </div>
+  </div>
+  <div class="report-menu">
+    <button class="report-menu-header"><i class="fas fa-globe"></i> Website</button>
+    <div class="report-menu-items">
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_gadygi8ggd/', this, 'Google Analytics')">Google Analytics</button>
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_72i2wokhhd/', this, 'Form Submissions')">Form Submissions</button>
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_uxpmtfpfld/', this, 'Country Specific Web Traffic')">Country Specific Web Traffic</button>
+    </div>
+  </div>
+  <div class="report-menu">
+    <button class="report-menu-header"><i class="fas fa-search"></i> SEO</button>
+    <div class="report-menu-items">
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ed48d87a-486f-4500-963f-c1ad286cbe93/page/p_d3fdz3zqgd/', this, 'Search Analytics')">Search Analytics</button>
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ed48d87a-486f-4500-963f-c1ad286cbe93/page/p_qjlg7ycbad/', this, 'Keyword Position Tracker')">Keyword Position Tracker</button>
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ed48d87a-486f-4500-963f-c1ad286cbe93/page/p_1yqzph3vld/', this, 'Domain Authority')">Domain Authority</button>
+    </div>
+  </div>
+  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/78376592-1e70-407c-8e8d-7bf6c085c5cb/page/p_sb1dx8khhd/', this, 'Email')"><i class="fas fa-envelope"></i> Email</button>
+  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/78376592-1e70-407c-8e8d-7bf6c085c5cb/page/p_vbl76okhhd/', this, 'Events')"><i class="fas fa-calendar"></i> Events</button>
+  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/78376592-1e70-407c-8e8d-7bf6c085c5cb/page/p_81eydpkhhd/', this, 'PR')"><i class="fas fa-microphone"></i> PR</button>
+  <div class="report-menu">
+    <button class="report-menu-header"><i class="fas fa-bullseye"></i> PPC</button>
+    <div class="report-menu-items">
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/86af7bb7-cc68-4801-aa8f-ad64672f6971/page/p_7f2aw8gugd/', this, 'Google')">Google</button>
+    </div>
+  </div>
+  <div class="report-menu">
+    <button class="report-menu-header"><i class="fas fa-share-alt"></i> Social Media</button>
+    <div class="report-menu-items">
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/78376592-1e70-407c-8e8d-7bf6c085c5cb/page/p_xuif67zced/', this, 'Organic')">Organic</button>
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/86af7bb7-cc68-4801-aa8f-ad64672f6971/page/p_6nz7z4i1fd/', this, 'Paid - LinkedIn')">Paid - LinkedIn</button>
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/86af7bb7-cc68-4801-aa8f-ad64672f6971/page/p_5ma47ri1fd/', this, 'Paid - Meta')">Paid - Meta</button>
+    </div>
+  </div>
+  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/7a8ab4f6-03ea-4f23-817b-5573bf272e87/page/p_wh1z31a8md/', this, 'OKR Tracker')"><i class="fas fa-clipboard-check"></i> OKR Tracker</button>
+  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/5e6f8143-db4c-48fd-8e2e-701ccc1f39ea/page/p_zkz4ix98md/', this, 'Monthly Commentary')"><i class="fas fa-comment-alt"></i> Monthly Commentary</button>
+<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/9a0a08f9-ba9c-4fd6-865c-86091882f3a5/page/p_pp46nz7h9c/', this, 'Training')"><i class="fas fa-chalkboard-teacher"></i> Training</button>
+  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_r1ojqvr4nd', this, 'Net Zero')"><i class="fas fa-leaf"></i> Net Zero</button>
+  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_ybns6k7srd', this, 'AMPSS')"><i class="fas fa-network-wired"></i> AMPSS</button>
+  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_vu3pc48srd', this, 'AIM')"><i class="fas fa-lightbulb"></i> AIM</button>
+  <div class="report-menu">
+    <button class="report-menu-header"><i class="fas fa-funnel-dollar"></i> Marketing Funnel</button>
+    <div class="report-menu-items">
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/f406a0d1-eb9f-4716-a181-ea0de09e00cf/page/p_jlgy4fn6md', this, 'AM FY26')">AM FY26</button>
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/50d90de8-38a3-4ea3-bd8f-16a7d5313347/page/p_jlgy4fn6md', this, 'VisNet FY26')">VisNet FY26</button>
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/91f1d804-484f-4654-9b93-79d68686a4c3/page/p_jlgy4fn6md', this, 'AM FY25')">AM FY25</button>
+      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/cd828cdc-0d10-4af8-b80c-046bf2db6df3/page/p_jlgy4fn6md', this, 'VisNet FY25')">VisNet FY25</button>
+    </div>
+  </div>
+  <div id="feedbackLink" tabindex="0" onclick="window.open('mailto:marketing@eatechnology.com?subject=Dashboard Feedback')">
+    <i class="fas fa-comment"></i> Give Feedback
+  </div>
     </div>
 
-    <!-- Header -->
-    <div class="report-header">
-        <img src="https://eatechnology.com/assets/img/logo.svg" alt="Company Logo" class="report-logo">
-        <h1>Marketing Activity Dashboard</h1>
+    <div class="report-main-content">
+      <div id="loadingIndicator"><i class="fas fa-spinner fa-spin"></i> Loading Report...</div>
+      <iframe id="reportFrame" src="https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_pp46nz7h9c/" onload="hideLoading()" onerror="reportShowErrorMessage()"></iframe>
+      <div id="reportErrorMessage">
+        Oops! The report could not be loaded. Please check if the report is shared publicly or try again later.
+      </div>
     </div>
+  </div>
 
-    <!-- Content Container -->
-    <div class="report-content-container">
-        <!-- Sidebar -->
-        <div class="report-sidebar">
-            <h2>Quick Navigation</h2>
-            
-			<div class="report-menu">
-                <button class="report-menu-header">KPI &amp; Key Insights</button>
-                <div class="report-menu-items">
-                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_k9c9t7qbrd/', this, 'AM FY 26')">AM FY 26</button>
-		    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_gqqz5fuard', this, 'AM FY 25')">AM FY 25</button>
-                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/fcceb078-3b7c-46b3-ba4d-355d6efc110c/page/p_jlgy4fn6md', this, 'VisNet FY 26')">VisNet FY 26</button>
-		    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/47951ca4-da97-4c84-b846-e37c0239856f/page/p_jlgy4fn6md/', this, 'VisNet FY 25')">VisNet FY 25</button>
-                </div>
-            </div>
-            <div class="report-menu">
-                <button class="report-menu-header">Campaigns</button>
-                <div class="report-menu-items">
-                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/7a8ab4f6-03ea-4f23-817b-5573bf272e87/page/p_dijrr91ykd/', this, 'ALVIN Reclose')">ALVIN Reclose</button>
-                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/7a8ab4f6-03ea-4f23-817b-5573bf272e87/page/p_9sw0vuyykd/', this, 'APP Campaigns')">APP Campaigns</button>
-		    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/7a8ab4f6-03ea-4f23-817b-5573bf272e87/page/p_46pk1vxtnd/', this, 'WinDebut/VisNet Design')">WinDebut/VisNet Design</button>
-		    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/7a8ab4f6-03ea-4f23-817b-5573bf272e87/page/p_htt9lurfld/', this, 'Campaign Source/Conversions')">Campaign Source/Conversions</button>
-                </div>
-            </div>
-            <div class="report-menu">
-                <button class="report-menu-header">Website</button>
-                <div class="report-menu-items">
-                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_gadygi8ggd/', this, 'Google Analytics')">Google Analytics</button>
-                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_72i2wokhhd/', this, 'Form Submissions')">Form Submissions</button>
-                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_uxpmtfpfld/', this, 'Country Specific Web Traffic')">Country Specific Web Traffic</button>
-                </div>
-            </div>
-            <div class="report-menu">
-                <button class="report-menu-header">SEO</button>
-                <div class="report-menu-items">
-                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ed48d87a-486f-4500-963f-c1ad286cbe93/page/p_d3fdz3zqgd/', this, 'Search Analytics')">Search Analytics</button>
-                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ed48d87a-486f-4500-963f-c1ad286cbe93/page/p_qjlg7ycbad/', this, 'Keyword Position Tracker')">Keyword Position Tracker</button>
-                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ed48d87a-486f-4500-963f-c1ad286cbe93/page/p_1yqzph3vld/', this, 'Domain Authority')">Domain Authority</button>
-                </div>
-            </div>
-            <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/78376592-1e70-407c-8e8d-7bf6c085c5cb/page/p_sb1dx8khhd/', this, 'Email')">Email</button>
-            <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/78376592-1e70-407c-8e8d-7bf6c085c5cb/page/p_vbl76okhhd/', this, 'Events')">Events</button>
-            <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/78376592-1e70-407c-8e8d-7bf6c085c5cb/page/p_81eydpkhhd/', this, 'PR')">PR</button>
-            <div class="report-menu">
-                <button class="report-menu-header">PPC</button>
-                <div class="report-menu-items">
-                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/86af7bb7-cc68-4801-aa8f-ad64672f6971/page/p_7f2aw8gugd/', this, 'Google')">Google</button>
-                </div>
-            </div>
-            <div class="report-menu">
-                <button class="report-menu-header">Social Media</button>
-                <div class="report-menu-items">
-                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/78376592-1e70-407c-8e8d-7bf6c085c5cb/page/p_xuif67zced/', this, 'Organic')">Organic</button>
-                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/86af7bb7-cc68-4801-aa8f-ad64672f6971/page/p_6nz7z4i1fd/', this, 'Paid - LinkedIn')">Paid - LinkedIn</button>
-                    <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/86af7bb7-cc68-4801-aa8f-ad64672f6971/page/p_5ma47ri1fd/', this, 'Paid - Meta')">Paid - Meta</button>
-                </div>
-            </div>
-		<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/7a8ab4f6-03ea-4f23-817b-5573bf272e87/page/p_wh1z31a8md/', this, 'OKR Tracker')">OKR Tracker</button>
-                <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/5e6f8143-db4c-48fd-8e2e-701ccc1f39ea/page/p_zkz4ix98md/', this, 'Monthly Commentary')">Monthly Commentary</button>
-		<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_r1ojqvr4nd', this, 'Net Zero')">Net Zero</button>
-		<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_ybns6k7srd', this, 'AMPSS')">AMPSS</button>
-		<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_vu3pc48srd', this, 'AIM')">AIM</button>
-       <div class="report-menu">
-                <button class="report-menu-header">Marketing Funnel</button>
-                <div class="report-menu-items">
-                <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/f406a0d1-eb9f-4716-a181-ea0de09e00cf/page/p_jlgy4fn6md', this, 'AM FY26')">AM FY26</button>
-		<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/50d90de8-38a3-4ea3-bd8f-16a7d5313347/page/p_jlgy4fn6md', this, 'VisNet FY26')">VisNet FY26</button>
-		<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/91f1d804-484f-4654-9b93-79d68686a4c3/page/p_jlgy4fn6md', this, 'AM FY25')">AM FY25</button>
-                <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/cd828cdc-0d10-4af8-b80c-046bf2db6df3/page/p_jlgy4fn6md', this, 'VisNet FY25')">VisNet FY25</button>
-		</div>
-            </div>
-	</div>
+  <script>
+    const reportPASSWORD = "yourpassword";
 
-        <!-- Main Content -->
-        <div class="report-main-content">
-            <iframe id="reportFrame" src="https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_pp46nz7h9c/" onerror="reportShowErrorMessage()"></iframe>
-            <div id="reportErrorMessage">
-                Oops! The report could not be loaded. Please check if the report is shared publicly or try again later.
-            </div>
-        </div>
-    </div>
+    function reportCheckPassword() {
+      const input = document.getElementById('reportPasswordInput').value;
+      if (input === reportPASSWORD) {
+        document.getElementById('reportPasswordOverlay').style.display = 'none';
+      } else {
+        alert('Incorrect password. Please try again.');
+      }
+    }
 
-    <script>
-        const reportPASSWORD = "yourpassword"; // Set your password here
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('collapsed');
+    }
 
-        function reportCheckPassword() {
-            const input = document.getElementById('reportPasswordInput').value;
-            if (input === reportPASSWORD) {
-                document.getElementById('reportPasswordOverlay').style.display = 'none';
-            } else {
-                alert('Incorrect password. Please try again.');
-            }
-        }
+    function reportLoadReport(reportUrl, button, title) {
+      const iframe = document.getElementById('reportFrame');
+      const errorMessage = document.getElementById('reportErrorMessage');
+      const buttons = document.querySelectorAll('.report-sidebar button');
 
-        function reportLoadReport(reportUrl, button, title) {
-            const iframe = document.getElementById('reportFrame');
-            const errorMessage = document.getElementById('reportErrorMessage');
-            const buttons = document.querySelectorAll('.report-sidebar button');
-            
-            errorMessage.style.display = 'none';
-            iframe.src = reportUrl;
+      document.getElementById('loadingIndicator').style.display = 'block';
+      errorMessage.style.display = 'none';
+      iframe.src = reportUrl;
 
-            if (button) {
-                buttons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-            }
+      if (button) {
+        buttons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+      }
 
-            document.title = title;
-        }
+      document.title = title;
+    }
 
-        function reportShowErrorMessage() {
-            const errorMessage = document.getElementById('reportErrorMessage');
-            errorMessage.style.display = 'block';
-        }
+    function hideLoading() {
+      document.getElementById('loadingIndicator').style.display = 'none';
+    }
 
-        document.querySelectorAll('.report-menu-header, .report-sidebar button').forEach(element => {
-    element.addEventListener('click', (event) => {
-        const menu = element.parentElement;
-        const allMenus = document.querySelectorAll('.report-menu');
-        const buttons = document.querySelectorAll('.report-sidebar button');
+    function reportShowErrorMessage() {
+      const errorMessage = document.getElementById('reportErrorMessage');
+      errorMessage.style.display = 'block';
+    }
 
-        // Handle menu headers
-        if (element.classList.contains('report-menu-header')) {
-            // Close all other menus
-            allMenus.forEach(otherMenu => {
-                if (otherMenu !== menu) {
-                    otherMenu.classList.remove('open');
-                }
-            });
-            // Toggle the clicked menu
-            menu.classList.toggle('open');
-        } else {
-            // Handle button clicks
-            buttons.forEach(btn => btn.classList.remove('active'));
-            element.classList.add('active');
-        }
-
-        // Stop submenu from closing on button click
-        if (element.closest('.report-menu-items')) {
-            event.stopPropagation();
-        }
-
-        // Highlight the parent menu if submenu button is clicked
-        if (menu && menu.classList.contains('report-menu')) {
-            document.querySelectorAll('.report-menu-header').forEach(header => header.classList.remove('active'));
-            menu.querySelector('.report-menu-header').classList.add('active');
-        }
+    document.getElementById('feedbackLink').addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        this.click();
+      }
     });
+  document.querySelectorAll('.report-menu-header').forEach(header => {
+  header.addEventListener('click', () => {
+    const menu = header.parentElement;
+    const allMenus = document.querySelectorAll('.report-menu');
+    allMenus.forEach(m => {
+      if (m !== menu) m.classList.remove('open');
+    });
+    menu.classList.toggle('open');
+  });
 });
-
-
-
-    </script>
+</script>
 </body>
 </html>
