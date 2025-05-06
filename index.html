@@ -252,6 +252,9 @@
   <div class="report-content-container">
     <div class="report-sidebar" id="sidebar">
   <h2>Quick Navigation</h2>
+		
+		<input type="text" id="menuSearchInput" placeholder="Search reports..." style="margin-bottom: 10px; padding: 5px; border-radius: 5px; width: 100%; box-sizing: border-box;">
+
   <div class="report-menu">
     <button class="report-menu-header"><i class="fas fa-chart-line"></i> KPI &amp; Key Insights</button>
     <div class="report-menu-items">
@@ -350,13 +353,18 @@
     const reportPASSWORD = "yourpassword";
 
     function reportCheckPassword() {
-      const input = document.getElementById('reportPasswordInput').value;
-      if (input === reportPASSWORD) {
-        document.getElementById('reportPasswordOverlay').style.display = 'none';
-      } else {
-        alert('Incorrect password. Please try again.');
-      }
-    }
+  const input = document.getElementById('reportPasswordInput').value;
+  const validPassword = "yourpassword";
+
+  if (input === validPassword) {
+    const now = new Date().getTime();
+    localStorage.setItem('dashboardAuthTime', now);
+    document.getElementById('reportPasswordOverlay').style.display = 'none';
+  } else {
+    alert('Incorrect password. Please try again.');
+  }
+}
+
 
     function toggleSidebar() {
       const sidebar = document.getElementById('sidebar');
@@ -404,6 +412,39 @@
     menu.classList.toggle('open');
   });
 });
+	  
+	  window.addEventListener('DOMContentLoaded', () => {
+  const lastAuthTime = localStorage.getItem('dashboardAuthTime');
+  const now = new Date().getTime();
+  const sixtyMinutes = 60 * 60 * 1000;
+
+  if (lastAuthTime && (now - parseInt(lastAuthTime) < sixtyMinutes)) {
+    document.getElementById('reportPasswordOverlay').style.display = 'none';
+  }
+});
+document.getElementById('menuSearchInput').addEventListener('input', function () {
+  const searchValue = this.value.toLowerCase();
+  const buttons = document.querySelectorAll('.report-sidebar button');
+
+  buttons.forEach(btn => {
+    const text = btn.textContent.toLowerCase();
+    const parentMenu = btn.closest('.report-menu');
+    const isMatch = text.includes(searchValue);
+
+    // Show or hide button based on match
+    btn.style.display = isMatch ? 'flex' : 'none';
+
+    // Also show/hide submenu containers and their headers if needed
+    if (parentMenu && parentMenu.classList.contains('report-menu')) {
+      const items = parentMenu.querySelectorAll('.report-menu-items button');
+      const anyVisible = [...items].some(i => i.style.display !== 'none');
+
+      parentMenu.style.display = anyVisible ? 'block' : 'none';
+      parentMenu.classList.toggle('open', anyVisible); // expand matched
+    }
+  });
+});
+
 </script>
 </body>
 </html>
