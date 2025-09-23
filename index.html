@@ -363,18 +363,25 @@
   </div>
 
   <script>
-    const reportPASSWORD = "yourpassword";
+async function hashMessage(msg) {
+  const msgUint8 = new TextEncoder().encode(msg);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
-    function reportCheckPassword() {
+// 🔒 Replace this with the SHA-256 hash of your real password
+const validHash = "e3c652f0ba0b4801205814f8b6bc49672c4c74e25b497770bb89b22cdeb4e951";  
+
+async function reportCheckPassword() {
   const input = document.getElementById('reportPasswordInput').value;
-  const validPassword = "yourpassword";
+  const inputHash = await hashMessage(input);
 
-  if (input === validPassword) {
-    const now = new Date().getTime();
-    localStorage.setItem('dashboardAuthTime', now);
+  if (inputHash === validHash) {
+    localStorage.setItem('dashboardAuthTime', Date.now());
     document.getElementById('reportPasswordOverlay').style.display = 'none';
   } else {
-    alert('Incorrect password. Please try again.');
+    alert("Incorrect password. Please try again.");
   }
 }
 
