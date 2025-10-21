@@ -1,282 +1,349 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Marketing Performance Metrics</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	  <meta charset="UTF-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	  <title>Marketing Performance Metrics</title>
+	  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+	  <style>
+		@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
-    body.report-body {
-      font-family: 'Roboto', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
-      box-sizing: border-box;
-    }
-    .report-header {
-      display: flex;
-      align-items: center;
-      background-color: #220639;
-      padding: 10px 20px;
-      color: white;
-      flex-shrink: 0;
-      width: 100%;
-      box-sizing: border-box;
-    }
-    .report-header img.report-logo {
-      height: 50px;
-      width: auto;
-      margin-right: 15px;
-    }
-    .report-header h1 {
-      font-size: 28px;
-      margin: 0;
-      flex-grow: 1;
-      text-align: center;
-    }
-    .toggle-sidebar-btn {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 20px;
-      cursor: pointer;
-      margin-right: 10px;
-    }
-    .report-content-container {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-    }
-    .report-sidebar {
-      width: 250px;
-      background-color: #220639;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      padding: 10px;
-      box-sizing: border-box;
-      flex-shrink: 0;
-      overflow-y: auto;
-      max-height: 100vh;
-      transition: width 0.3s ease;
-    }
-    .report-sidebar.collapsed {
-      width: 0;
-      padding: 0;
-      overflow: hidden;
-    }
-    .report-sidebar h2 {
-      color: white;
-      font-weight: 700;
-      margin-bottom: 10px;
-      text-align: center;
-      font-size: 14px;
-    }
-    .report-sidebar button {
-      background-color: #00AAE4;
-      color: #220639;
-      border: none;
-      padding: 5px;
-      cursor: pointer;
-      border-radius: 5px;
-      margin-bottom: 5px;
-      font-weight: 700;
-      text-align: left;
-      width: 100%;
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-    }
-    .report-sidebar button i {
-      margin-right: 8px;
-    }
-    .report-sidebar button[title]:hover::after {
-      content: attr(title);
-      position: absolute;
-      left: 105%;
-      background: #333;
-      color: #fff;
-      padding: 5px 8px;
-      border-radius: 4px;
-      white-space: nowrap;
-    }
-    .report-sidebar button:hover, .report-sidebar button.active {
-      background-color: #131633;
-      color: white;
-    }
-    .report-main-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-    }
-    #reportFrame {
-      display: block;
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    #loadingIndicator {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 20px;
-      color: #00AAE4;
-      display: none;
-    }
-    #reportErrorMessage {
-      display: none;
-      text-align: center;
-      margin-top: 20px;
-      font-size: 18px;
-      color: red;
-    }
-    #reportPasswordOverlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.9);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      z-index: 9999;
-    }
-    #reportPasswordOverlay input {
-      padding: 10px;
-      font-size: 16px;
-      margin-bottom: 10px;
-      width: 200px;
-      border-radius: 5px;
-      border: none;
-    }
-    #reportPasswordOverlay button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background-color: #00AAE4;
-      color: #220639;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .report-menu-header {
-      background-color: #00AAE4;
-      color: #1b1e3d;
-      border: none;
-      padding: 10px 15px;
-      cursor: pointer;
-      border-radius: 5px;
-      margin-bottom: 5px;
-      font-weight: 700;
-      text-align: left;
-    }
-    .report-menu-header:hover {
-      background-color: #131633;
-      color: white;
-    }
-    .report-menu-items {
-      display: none;
-      margin-left: 15px;
-    }
-    .report-menu-items button {
-      background-color: #131633;
-      color: white;
-      border: none;
-      padding: 8px 15px;
-      cursor: pointer;
-      border-radius: 5px;
-      margin-bottom: 5px;
-      font-weight: 700;
-      text-align: left;
-    }
-    .report-menu-items button:hover {
-      background-color: #00AAE4;
-      color: #1b1e3d;
-    }
-    .report-menu.open .report-menu-items {
-      display: flex;
-      flex-direction: column;
-    }
-    .report-sidebar button.active {
-      border: 2px solid #00AAE4;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(250, 183, 36, 0.7);
-    }
-    .report-menu.open > .report-menu-header {
-      border: 2px solid #00AAE4;
-      border-radius: 5px;
-      box-shadow: 0 0 10px rgba(250, 183, 36, 0.7);
-    }
-    .report-sidebar button:hover, .report-menu-header:hover {
-      border: 2px solid #131633;
-      box-shadow: 0 0 10px rgba(19, 22, 51, 0.7);
-    }
-    @media (max-width: 768px) {
-      .report-sidebar {
-        position: absolute;
-        z-index: 10;
-        height: 100%;
-        background: #220639;
-      }
-    }
-    #feedbackLink {
-      text-align: center;
-      margin-top: 20px;
-      color: #00AAE4;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body class="report-body">
-  <div id="reportPasswordOverlay">
-    <input type="password" id="reportPasswordInput" placeholder="Enter Password">
-    <button onclick="reportCheckPassword()">Submit</button>
-  </div>
+		body.report-body {
+		  font-family: 'Roboto', Arial, sans-serif;
+		  margin: 0;
+		  padding: 0;
+		  display: flex;
+		  flex-direction: column;
+		  height: 100vh;
+		  box-sizing: border-box;
+		}
+		.report-header {
+		  display: flex;
+		  align-items: center;
+		  background-color: #220639;
+		  padding: 10px 20px;
+		  color: white;
+		  flex-shrink: 0;
+		  width: 100%;
+		  box-sizing: border-box;
+		}
+		.report-header img.report-logo {
+		  height: 50px;
+		  width: auto;
+		  margin-right: 15px;
+		}
+		.report-header h1 {
+		  font-size: 28px;
+		  margin: 0;
+		  flex-grow: 1;
+		  text-align: center;
+		}
+		.toggle-sidebar-btn {
+		  background: none;
+		  border: none;
+		  color: white;
+		  font-size: 20px;
+		  cursor: pointer;
+		  margin-right: 10px;
+		}
+		.report-content-container {
+		  display: flex;
+		  flex: 1;
+		  overflow: hidden;
+		}
+		.report-sidebar {
+		  width: 250px;
+		  background-color: #220639;
+		  color: white;
+		  display: flex;
+		  flex-direction: column;
+		  padding: 10px;
+		  box-sizing: border-box;
+		  flex-shrink: 0;
+		  overflow-y: auto;
+		  max-height: 100vh;
+		  transition: width 0.3s ease;
+		}
+		.report-sidebar.collapsed {
+		  width: 0;
+		  padding: 0;
+		  overflow: hidden;
+		}
+		.report-sidebar h2 {
+		  color: white;
+		  font-weight: 700;
+		  margin-bottom: 10px;
+		  text-align: center;
+		  font-size: 14px;
+		}
+		.report-sidebar button {
+		  background-color: #00AAE4;
+		  color: #220639;
+		  border: none;
+		  padding: 5px;
+		  cursor: pointer;
+		  border-radius: 5px;
+		  margin-bottom: 5px;
+		  font-weight: 700;
+		  text-align: left;
+		  width: 100%;
+		  box-sizing: border-box;
+		  display: flex;
+		  align-items: center;
+		}
+		.report-sidebar button i {
+		  margin-right: 8px;
+		}
+		.report-sidebar button[title]:hover::after {
+		  content: attr(title);
+		  position: absolute;
+		  left: 105%;
+		  background: #333;
+		  color: #fff;
+		  padding: 5px 8px;
+		  border-radius: 4px;
+		  white-space: nowrap;
+		}
+		.report-sidebar button:hover, .report-sidebar button.active {
+		  background-color: #131633;
+		  color: white;
+		}
+		.report-main-content {
+		  flex: 1;
+		  display: flex;
+		  flex-direction: column;
+		  position: relative;
+		  overflow: hidden;
+		}
+		#reportFrame {
+		  display: block;
+		  width: 100%;
+		  height: 100%;
+		  border: none;
+		}
+		#loadingIndicator {
+		  position: absolute;
+		  top: 50%;
+		  left: 50%;
+		  transform: translate(-50%, -50%);
+		  font-size: 20px;
+		  color: #00AAE4;
+		  display: none;
+		}
+		#reportErrorMessage {
+		  display: none;
+		  text-align: center;
+		  margin-top: 20px;
+		  font-size: 18px;
+		  color: red;
+		}
+		#reportPasswordOverlay {
+		  position: fixed;
+		  top: 0;
+		  left: 0;
+		  width: 100%;
+		  height: 100%;
+		  background-color: rgba(0, 0, 0, 0.9);
+		  display: flex;
+		  justify-content: center;
+		  align-items: center;
+		  flex-direction: column;
+		  z-index: 9999;
+		}
+		#reportPasswordOverlay input {
+		  padding: 10px;
+		  font-size: 16px;
+		  margin-bottom: 10px;
+		  width: 200px;
+		  border-radius: 5px;
+		  border: none;
+		}
+		#reportPasswordOverlay button {
+		  padding: 10px 20px;
+		  font-size: 16px;
+		  background-color: #00AAE4;
+		  color: #220639;
+		  border: none;
+		  border-radius: 5px;
+		  cursor: pointer;
+		}
+		.report-menu-header {
+		  background-color: #00AAE4;
+		  color: #1b1e3d;
+		  border: none;
+		  padding: 10px 15px;
+		  cursor: pointer;
+		  border-radius: 5px;
+		  margin-bottom: 5px;
+		  font-weight: 700;
+		  text-align: left;
+		}
+		.report-menu-header:hover {
+		  background-color: #131633;
+		  color: white;
+		}
+		.report-menu-items {
+		  display: none;
+		  margin-left: 15px;
+		}
+		.report-menu-items button {
+		  background-color: #131633;
+		  color: white;
+		  border: none;
+		  padding: 8px 15px;
+		  cursor: pointer;
+		  border-radius: 5px;
+		  margin-bottom: 5px;
+		  font-weight: 700;
+		  text-align: left;
+		}
+		.report-menu-items button:hover {
+		  background-color: #00AAE4;
+		  color: #1b1e3d;
+		}
+		.report-menu.open .report-menu-items {
+		  display: flex;
+		  flex-direction: column;
+		}
+		.report-sidebar button.active {
+		  border: 2px solid #00AAE4;
+		  border-radius: 5px;
+		  box-shadow: 0 0 10px rgba(250, 183, 36, 0.7);
+		}
+		.report-menu.open > .report-menu-header {
+		  border: 2px solid #00AAE4;
+		  border-radius: 5px;
+		  box-shadow: 0 0 10px rgba(250, 183, 36, 0.7);
+		}
+		.report-sidebar button:hover, .report-menu-header:hover {
+		  border: 2px solid #131633;
+		  box-shadow: 0 0 10px rgba(19, 22, 51, 0.7);
+		}
+		@media (max-width: 768px) {
+		  .report-sidebar {
+			position: absolute;
+			z-index: 10;
+			height: 100%;
+			background: #220639;
+		  }
+		}
+		#feedbackLink {
+		  text-align: center;
+		  margin-top: 20px;
+		  color: #00AAE4;
+		  cursor: pointer;
+		}
+		  /* === Split-Screen Layout === */
+	#reportFramesContainer {
+	  display: flex;
+	  width: 100%;
+	  height: 100%;
+	}
 
-  <div class="report-header">
-    <button class="toggle-sidebar-btn" onclick="toggleSidebar()">
-      <i class="fas fa-bars"></i>
-    </button>
-    <img src="https://eatechnology.com/assets/img/logo.svg" alt="Company Logo" class="report-logo">
-    <h1>Marketing Activity Dashboard</h1>
-  </div>
+	#reportFramesContainer.split {
+	  display: flex;
+	  flex-direction: row;
+	}
 
-  <div class="report-content-container">
-    <div class="report-sidebar" id="sidebar">
-  <h2>Quick Navigation</h2>
-		<input type="text" id="menuSearchInput" placeholder="Search reports..." style="margin-bottom: 10px; padding: 5px; border-radius: 5px; width: 100%; box-sizing: border-box;">
+	#reportFramesContainer iframe {
+	  width: 100%;
+	  height: 100%;
+	  border: none;
+	  transition: width 0.3s ease;
+	}
 
-  <div class="report-menu">
-    <button class="report-menu-header"><i class="fas fa-chart-line"></i> MQLs &amp; Key Insights</button>
-    <div class="report-menu-items">
-<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/fcceb078-3b7c-46b3-ba4d-355d6efc110c/page/p_8jrq4g21ud', this, 'MQLs')"><i class="fas fa-chart-pie"></i>FY 26</button>
+	#reportFramesContainer.split iframe {
+	  width: 50%;
+	  border-left: 2px solid #220639;
+	}
+	/* === Floating Control Buttons === */
+	.control-toggle-btn {
+	  position: absolute;
+	  top: 15px;
+	  padding: 6px 10px;
+	  font-size: 13px;
+	  font-weight: bold;
+	  border-radius: 6px;
+	  border: none;
+	  cursor: pointer;
+	  transition: all 0.3s ease;
+	  z-index: 100;
+	  display: none;
+	}
+	#leftControlBtn { left: 15px; background-color: #00AAE4; color: #220639; }
+	#rightControlBtn { right: 15px; background-color: #131633; color: white; }
 
-<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_k9c9t7qbrd/', this, 'AM FY 26')"><i class="fas fa-chart-pie"></i> AM FY 26</button>
-<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/fcceb078-3b7c-46b3-ba4d-355d6efc110c/page/p_jlgy4fn6md', this, 'VisNet FY 26')"><i class="fas fa-chart-pie"></i> VisNet FY 26</button>
-<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_gqqz5fuard', this, 'AM FY 25')"><i class="fas fa-chart-pie"></i> AM FY 25</button>
-<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/fcceb078-3b7c-46b3-ba4d-355d6efc110c/page/p_32xh2ydawd', this, 'VisNet FY 25')"><i class="fas fa-chart-pie"></i> VisNet FY 25</button>
-    </div>
-  </div>
-		<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_72i2wokhhd/', this, 'Form Submissions')"><i class="fas fa-file-signature"></i> Form Submissions</button>
+	.control-toggle-btn.locked {
+	  opacity: 0.6;
+	  background-color: #444;
+	  color: #ccc;
+	  cursor: pointer;
+	}
+	.control-toggle-btn:hover {
+	  transform: scale(1.05);
+	}
+	/* === Active Control Animation === */
+	@keyframes pulse {
+	  0% { transform: scale(1); }
+	  50% { transform: scale(1.1); }
+	  100% { transform: scale(1); }
+	}
+	.control-toggle-btn:not(.locked) {
+	  animation: pulse 2s infinite;
+	}
 
-  <div class="report-menu">
-    <button class="report-menu-header"><i class="fas fa-globe"></i> VisNet Website</button>
-    <div class="report-menu-items">
+	  </style>
+	</head>
+	<body class="report-body">
+	  <div id="reportPasswordOverlay">
+		<input type="password" id="reportPasswordInput" placeholder="Enter Password">
+		<button onclick="reportCheckPassword()">Submit</button>
+	  </div>
+
+	  <div class="report-header">
+		<button class="toggle-sidebar-btn" onclick="toggleSidebar()">
+		  <i class="fas fa-bars"></i>
+		</button>
+		<img src="https://eatechnology.com/assets/img/logo.svg" alt="Company Logo" class="report-logo">
+		<h1>Marketing Activity Dashboard</h1> <button id="toggleCompareBtn" style="background:#00AAE4;color:#220639;border:none;padding:8px 12px;border-radius:5px;cursor:pointer;margin-left:10px;font-weight:700;">
+	  <i class="fas fa-columns"></i> Compare Reports
+	</button>
+		  <button id="resetSplitBtn" style="background:#444;color:white;border:none;padding:8px 12px;border-radius:5px;cursor:pointer;margin-left:10px;font-weight:700;display:none;">
+	  <i class="fas fa-rotate-left"></i> Reset Split View
+	</button>
+<button id="showUpdatesBtn" style="background:#00AAE4;color:#220639;border:none;padding:8px 12px;border-radius:5px;cursor:pointer;margin-left:10px;font-weight:700;">
+  <i class="fas fa-bell"></i> What's New
+</button>
+	  </div>
+
+	  <div class="report-content-container">
+		<div class="report-sidebar" id="sidebar">
+	  <h2>Quick Navigation</h2>
+			<input type="text" id="menuSearchInput" placeholder="Search reports..." style="margin-bottom: 10px; padding: 5px; border-radius: 5px; width: 100%; box-sizing: border-box;">
+
+	  <div class="report-menu">
+		<button class="report-menu-header"><i class="fas fa-chart-line"></i> MQLs &amp; Key Insights</button>
+		<div class="report-menu-items">
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/fcceb078-3b7c-46b3-ba4d-355d6efc110c/page/p_8jrq4g21ud', this, 'MQLs')"><i class="fas fa-chart-pie"></i>FY 26</button>
+
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_k9c9t7qbrd/', this, 'AM FY 26')"><i class="fas fa-chart-pie"></i> AM FY 26</button>
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/fcceb078-3b7c-46b3-ba4d-355d6efc110c/page/p_jlgy4fn6md', this, 'VisNet FY 26')"><i class="fas fa-chart-pie"></i> VisNet FY 26</button>
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_gqqz5fuard', this, 'AM FY 25')"><i class="fas fa-chart-pie"></i> AM FY 25</button>
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/fcceb078-3b7c-46b3-ba4d-355d6efc110c/page/p_32xh2ydawd', this, 'VisNet FY 25')"><i class="fas fa-chart-pie"></i> VisNet FY 25</button>
+		</div>
+	  </div>
+			<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_72i2wokhhd/', this, 'Form Submissions')"><i class="fas fa-file-signature"></i> Form Submissions</button>
+
+	  <div class="report-menu">
+		<button class="report-menu-header"><i class="fas fa-globe"></i> VisNet Website</button>
+		<div class="report-menu-items">
     <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_gadygi8ggd/', this, 'Google Analytics')"><i class="fas fa-chart-area"></i> Google Analytics</button>
 	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ed48d87a-486f-4500-963f-c1ad286cbe93/page/p_d3fdz3zqgd/', this, 'Search Analytics')"><i class="fas fa-search"></i> Search Analytics</button>
 <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_uxpmtfpfld/', this, 'Country Specific Web Traffic')"><i class="fas fa-flag"></i> Country Specific Web Traffic</button>
 
     </div>
-  </div>
-				<!-- EA Technology -->
+	  </div>
+			<!-- EA Technology -->
 
   <div class="report-menu">
     <button class="report-menu-header"><i class="fas fa-building"></i> EA Website</button>
@@ -285,192 +352,402 @@
 	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_rwg4z6sdcd/', this, 'Search Analytics')"><i class="fas fa-search"></i> Search Analytics</button>    </div>
   </div>
 
-	    <!-- VisNet Monitoring -->
-<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_rdv1w7wftd/', this, 'VisNet Monitoring')">
-  <i class="fas fa-desktop"></i> VisNet Monitoring
-</button>
-	    <!-- VisNet Modelling -->
-<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_l8z90wxitd/', this, 'VisNet Modelling')">
-  <i class="fas fa-desktop"></i> VisNet Modelling
-</button>
-	    
-<!-- Training -->
-<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/9a0a08f9-ba9c-4fd6-865c-86091882f3a5/page/p_pp46nz7h9c/', this, 'Training')"><i class="fas fa-chalkboard-teacher"></i> Training</button>
+			<!-- VisNet Monitoring -->
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_rdv1w7wftd/', this, 'VisNet Monitoring')">
+	  <i class="fas fa-desktop"></i> VisNet Monitoring
+	</button>
+			<!-- VisNet Modelling -->
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_l8z90wxitd/', this, 'VisNet Modelling')">
+	  <i class="fas fa-desktop"></i> VisNet Modelling
+	</button>
 
-<!-- Net Zero -->
-<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_r1ojqvr4nd', this, 'Net Zero')"><i class="fas fa-leaf"></i> Net Zero</button>
+	<!-- Training -->
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/9a0a08f9-ba9c-4fd6-865c-86091882f3a5/page/p_pp46nz7h9c/', this, 'Training')"><i class="fas fa-chalkboard-teacher"></i> Training</button>
 
-<!-- AMPSS -->
-<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_ybns6k7srd', this, 'AMPSS')"><i class="fas fa-network-wired"></i> AMPSS</button>
+	<!-- Net Zero -->
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_r1ojqvr4nd', this, 'Net Zero')"><i class="fas fa-leaf"></i> Net Zero</button>
 
-<!-- AIM -->
-<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_vu3pc48srd', this, 'AIM')"><i class="fas fa-lightbulb"></i> AIM</button>
+	<!-- AMPSS -->
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_ybns6k7srd', this, 'AMPSS')"><i class="fas fa-network-wired"></i> AMPSS</button>
 
-<!-- UltraTev -->
-<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_atmgkegetd/', this, 'UltraTev')"><i class="fas fa-bolt"></i> UltraTev</button>
+	<!-- AIM -->
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_vu3pc48srd', this, 'AIM')"><i class="fas fa-lightbulb"></i> AIM</button>
 
-<!-- Oil & Forensics -->
-<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_xh8m0z3ctd/', this, 'Oil & Forensics')"><i class="fas fa-vials"></i> Oil & Forensics</button>
+	<!-- UltraTev -->
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_atmgkegetd/', this, 'UltraTev')"><i class="fas fa-bolt"></i> UltraTev</button>
 
-  <div class="report-menu">
-    <button class="report-menu-header"><i class="fas fa-search"></i> SEO</button>
-    <div class="report-menu-items">
+	<!-- Oil & Forensics -->
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_xh8m0z3ctd/', this, 'Oil & Forensics')"><i class="fas fa-vials"></i> Oil &amp; Forensics</button>
+
+	  <div class="report-menu">
+		<button class="report-menu-header"><i class="fas fa-search"></i> SEO</button>
+		<div class="report-menu-items">
 <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ed48d87a-486f-4500-963f-c1ad286cbe93/page/p_qjlg7ycbad/', this, 'Keyword Position Tracker')"><i class="fas fa-key"></i> Keyword Position Tracker</button>
 <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ed48d87a-486f-4500-963f-c1ad286cbe93/page/p_1yqzph3vld/', this, 'Domain Authority')"><i class="fas fa-sitemap"></i> Domain Authority</button>
 <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_667j3sn4vd', this, 'Page Speed')"><i class="fas fa-tachometer-alt"></i> Page Speed</button>
 <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/ebe5c1e4-fff4-48fb-9726-410557212720/page/p_k7wtaby9vd', this, 'Health Score')"><i class="fas fa-heartbeat"></i> Health Score</button>
-
     </div>
-  </div>
-  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/78376592-1e70-407c-8e8d-7bf6c085c5cb/page/p_sb1dx8khhd/', this, 'Email')"><i class="fas fa-envelope"></i> Email</button>
-  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/78376592-1e70-407c-8e8d-7bf6c085c5cb/page/p_vbl76okhhd/', this, 'Events')"><i class="fas fa-calendar"></i> Events</button>
-  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/78376592-1e70-407c-8e8d-7bf6c085c5cb/page/p_81eydpkhhd/', this, 'PR')"><i class="fas fa-microphone"></i> PR</button>
-  <div class="report-menu">
-    <button class="report-menu-header"><i class="fas fa-bullseye"></i> PPC</button>
-    <div class="report-menu-items">
-      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/86af7bb7-cc68-4801-aa8f-ad64672f6971/page/p_7f2aw8gugd/', this, 'Google')"><i class="fab fa-google"></i> Google</button>
-      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/86af7bb7-cc68-4801-aa8f-ad64672f6971/page/p_r3xp7adzqd/', this, 'Bing')"><i class="fab fa-bing"></i> Bing</button>
-      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/7a8ab4f6-03ea-4f23-817b-5573bf272e87/page/p_htt9lurfld/', this, 'Campaign Source/Conversions')"><i class="fas fa-bullseye"></i> Campaign Source/Conversions</button>
-    </div>
-  </div>
-  <div class="report-menu">
-    <button class="report-menu-header"><i class="fas fa-share-alt"></i> Social Media</button>
-    <div class="report-menu-items">
-      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_6wnd69nf9c', this, 'Organic - LinkedIn')"><i class="fas fa-leaf"></i> Organic - LinkedIn</button>
-<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/86af7bb7-cc68-4801-aa8f-ad64672f6971/page/p_6nz7z4i1fd/', this, 'Paid - LinkedIn')"><i class="fab fa-linkedin"></i> Paid - LinkedIn</button>
-<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/86af7bb7-cc68-4801-aa8f-ad64672f6971/page/p_5ma47ri1fd/', this, 'Paid - Meta')"><i class="fab fa-facebook"></i> Paid - Meta</button>
+	  </div>
+	  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/78376592-1e70-407c-8e8d-7bf6c085c5cb/page/p_sb1dx8khhd/', this, 'Email')"><i class="fas fa-envelope"></i> Email</button>
+	  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/78376592-1e70-407c-8e8d-7bf6c085c5cb/page/p_vbl76okhhd/', this, 'Events')"><i class="fas fa-calendar"></i> Events</button>
+	  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/78376592-1e70-407c-8e8d-7bf6c085c5cb/page/p_81eydpkhhd/', this, 'PR')"><i class="fas fa-microphone"></i> PR</button>
+	  <div class="report-menu">
+		<button class="report-menu-header"><i class="fas fa-bullseye"></i> PPC</button>
+		<div class="report-menu-items">
+		  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/86af7bb7-cc68-4801-aa8f-ad64672f6971/page/p_7f2aw8gugd/', this, 'Google')"><i class="fab fa-google"></i> Google</button>
+		  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/86af7bb7-cc68-4801-aa8f-ad64672f6971/page/p_r3xp7adzqd/', this, 'Bing')"><i class="fab fa-bing"></i> Bing</button>
+		  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/7a8ab4f6-03ea-4f23-817b-5573bf272e87/page/p_htt9lurfld/', this, 'Campaign Source/Conversions')"><i class="fas fa-bullseye"></i> Campaign Source/Conversions</button>
+		</div>
+	  </div>
+	  <div class="report-menu">
+		<button class="report-menu-header"><i class="fas fa-share-alt"></i> Social Media</button>
+		<div class="report-menu-items">
+		  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_6wnd69nf9c', this, 'Organic - LinkedIn')"><i class="fas fa-leaf"></i> Organic - LinkedIn</button>
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/86af7bb7-cc68-4801-aa8f-ad64672f6971/page/p_6nz7z4i1fd/', this, 'Paid - LinkedIn')"><i class="fab fa-linkedin"></i> Paid - LinkedIn</button>
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/86af7bb7-cc68-4801-aa8f-ad64672f6971/page/p_5ma47ri1fd/', this, 'Paid - Meta')"><i class="fab fa-facebook"></i> Paid - Meta</button>
 
-    </div>
-  </div>
-  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/7a8ab4f6-03ea-4f23-817b-5573bf272e87/page/p_wh1z31a8md/', this, 'OKR Tracker')"><i class="fas fa-clipboard-check"></i> OKR Tracker</button>
-  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/5e6f8143-db4c-48fd-8e2e-701ccc1f39ea/page/p_zkz4ix98md/', this, 'Monthly Commentary')"><i class="fas fa-comment-alt"></i> Monthly Commentary</button>
-  <div class="report-menu">
-    <button class="report-menu-header"><i class="fas fa-funnel-dollar"></i> Marketing Funnel</button>
-    <div class="report-menu-items">
-      <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/f406a0d1-eb9f-4716-a181-ea0de09e00cf/page/p_jlgy4fn6md', this, 'AM FY26')"><i class="fas fa-filter"></i> AM FY26</button>
-<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/50d90de8-38a3-4ea3-bd8f-16a7d5313347/page/p_jlgy4fn6md', this, 'VisNet FY26')"><i class="fas fa-filter"></i> VisNet FY26</button>
-<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/91f1d804-484f-4654-9b93-79d68686a4c3/page/p_jlgy4fn6md', this, 'AM FY25')"><i class="fas fa-filter"></i> AM FY25</button>
-<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/cd828cdc-0d10-4af8-b80c-046bf2db6df3/page/p_jlgy4fn6md', this, 'VisNet FY25')"><i class="fas fa-filter"></i> VisNet FY25</button>
+		</div>
+	  </div>
+	  	<!-- 
+<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/7a8ab4f6-03ea-4f23-817b-5573bf272e87/page/p_wh1z31a8md/', this, 'OKR Tracker')"><i class="fas fa-clipboard-check"></i> OKR Tracker</button>
+	  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/5e6f8143-db4c-48fd-8e2e-701ccc1f39ea/page/p_zkz4ix98md/', this, 'Monthly Commentary')"><i class="fas fa-comment-alt"></i> Monthly Commentary</button> -->
+	  <div class="report-menu">
+		<button class="report-menu-header"><i class="fas fa-funnel-dollar"></i> Marketing Funnel</button>
+		<div class="report-menu-items">
+		  <button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/f406a0d1-eb9f-4716-a181-ea0de09e00cf/page/p_jlgy4fn6md', this, 'AM FY26')"><i class="fas fa-filter"></i> AM FY26</button>
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/50d90de8-38a3-4ea3-bd8f-16a7d5313347/page/p_jlgy4fn6md', this, 'VisNet FY26')"><i class="fas fa-filter"></i> VisNet FY26</button>
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/91f1d804-484f-4654-9b93-79d68686a4c3/page/p_jlgy4fn6md', this, 'AM FY25')"><i class="fas fa-filter"></i> AM FY25</button>
+	<button onclick="reportLoadReport('https://lookerstudio.google.com/embed/reporting/cd828cdc-0d10-4af8-b80c-046bf2db6df3/page/p_jlgy4fn6md', this, 'VisNet FY25')"><i class="fas fa-filter"></i> VisNet FY25</button>
 
-    </div>
-  </div>
-  <div id="feedbackLink" tabindex="0" onclick="window.open('mailto:rameez.majeed@eatechnology.com?subject=Dashboard Feedback')">
-    <i class="fas fa-comment"></i> Give Feedback
-  </div>
-    </div>
+		</div>
+	  </div>
+	  <div id="feedbackLink" tabindex="0" onclick="window.open('mailto:rameez.majeed@eatechnology.com?subject=Dashboard Feedback')">
+		<i class="fas fa-comment"></i> Give Feedback
+	  </div>
+		</div>
 
-    <div class="report-main-content">
-      <div id="loadingIndicator"><i class="fas fa-spinner fa-spin"></i> Loading Report...</div>
-      <iframe id="reportFrame" src="https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_pp46nz7h9c/" onload="hideLoading()" onerror="reportShowErrorMessage()"></iframe>
-      <div id="reportErrorMessage">
-        Oops! The report could not be loaded. Please check if the report is shared publicly or try again later.
-      </div>
-    </div>
-  </div>
+		<div class="report-main-content">
+		  <div id="loadingIndicator"><i class="fas fa-spinner fa-spin"></i> Loading Report...</div>
+		  <div id="reportFramesContainer">
+	  <iframe id="reportFrame" 
+			  src="https://lookerstudio.google.com/embed/reporting/2b663a8e-07ef-4f74-9f4f-9ea7ea9b1c6b/page/p_pp46nz7h9c/" 
+			  onload="hideLoading()" 
+			  onerror="reportShowErrorMessage()"></iframe>
 
-  <script>
-async function hashMessage(msg) {
-  const msgUint8 = new TextEncoder().encode(msg);
-  const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-}
+	  <iframe id="reportFrame2" 
+			  style="display:none;" 
+			  onload="hideLoading()" 
+			  onerror="reportShowErrorMessage()"></iframe>
 
-// 🔒 Replace this with the SHA-256 hash of your real password
-const validHash = "e3c652f0ba0b4801205814f8b6bc49672c4c74e25b497770bb89b22cdeb4e951";  
+			  <!-- Floating control buttons -->
+	  <button id="leftControlBtn" class="control-toggle-btn">🟢 Control</button>
+	  <button id="rightControlBtn" class="control-toggle-btn locked">🔒 Locked</button>
+	</div>
 
-async function reportCheckPassword() {
-  const input = document.getElementById('reportPasswordInput').value;
-  const inputHash = await hashMessage(input);
+		  <div id="reportErrorMessage">
+			Oops! The report could not be loaded. Please check if the report is shared publicly or try again later.
+		  </div>
+		</div>
+	  </div>
 
-  if (inputHash === validHash) {
-    localStorage.setItem('dashboardAuthTime', Date.now());
-    document.getElementById('reportPasswordOverlay').style.display = 'none';
-  } else {
-    alert("Incorrect password. Please try again.");
+	  <script>
+	async function hashMessage(msg) {
+	  const msgUint8 = new TextEncoder().encode(msg);
+	  const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
+	  const hashArray = Array.from(new Uint8Array(hashBuffer));
+	  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+	}
+
+	// 🔒 Replace this with the SHA-256 hash of your real password
+	const validHash = "e3c652f0ba0b4801205814f8b6bc49672c4c74e25b497770bb89b22cdeb4e951";  
+
+	async function reportCheckPassword() {
+	  const input = document.getElementById('reportPasswordInput').value;
+	  const inputHash = await hashMessage(input);
+
+	  if (inputHash === validHash) {
+		localStorage.setItem('dashboardAuthTime', Date.now());
+		document.getElementById('reportPasswordOverlay').style.display = 'none';
+	  } else {
+		alert("Incorrect password. Please try again.");
+	  }
+	}
+
+
+		function toggleSidebar() {
+		  const sidebar = document.getElementById('sidebar');
+		  sidebar.classList.toggle('collapsed');
+		}
+
+		function reportLoadReport(reportUrl, button, title) {
+		  const iframe = document.getElementById('reportFrame');
+		  const errorMessage = document.getElementById('reportErrorMessage');
+		  const buttons = document.querySelectorAll('.report-sidebar button');
+
+		  document.getElementById('loadingIndicator').style.display = 'block';
+		  errorMessage.style.display = 'none';
+		  iframe.src = reportUrl;
+
+		  if (button) {
+			buttons.forEach(btn => btn.classList.remove('active'));
+			button.classList.add('active');
+		  }
+
+		  document.title = title;
+		}
+
+		function hideLoading() {
+		  document.getElementById('loadingIndicator').style.display = 'none';
+		}
+
+		function reportShowErrorMessage() {
+		  const errorMessage = document.getElementById('reportErrorMessage');
+		  errorMessage.style.display = 'block';
+		}
+
+		document.getElementById('feedbackLink').addEventListener('keydown', function(e) {
+		  if (e.key === 'Enter') {
+			this.click();
+		  }
+		});
+	  document.querySelectorAll('.report-menu-header').forEach(header => {
+	  header.addEventListener('click', () => {
+		const menu = header.parentElement;
+		const allMenus = document.querySelectorAll('.report-menu');
+		allMenus.forEach(m => {
+		  if (m !== menu) m.classList.remove('open');
+		});
+		menu.classList.toggle('open');
+	  });
+	});
+
+		  window.addEventListener('DOMContentLoaded', () => {
+	  const lastAuthTime = localStorage.getItem('dashboardAuthTime');
+	  const now = new Date().getTime();
+	  const sixtyMinutes = 60 * 60 * 1000;
+
+	  if (lastAuthTime && (now - parseInt(lastAuthTime) < sixtyMinutes)) {
+		document.getElementById('reportPasswordOverlay').style.display = 'none';
+	  }
+	});
+	document.getElementById('menuSearchInput').addEventListener('input', function () {
+	  const searchValue = this.value.toLowerCase();
+	  const buttons = document.querySelectorAll('.report-sidebar button');
+
+	  buttons.forEach(btn => {
+		const text = btn.textContent.toLowerCase();
+		const parentMenu = btn.closest('.report-menu');
+		const isMatch = text.includes(searchValue);
+
+		// Show or hide button based on match
+		btn.style.display = isMatch ? 'flex' : 'none';
+
+		// Also show/hide submenu containers and their headers if needed
+		if (parentMenu && parentMenu.classList.contains('report-menu')) {
+		  const items = parentMenu.querySelectorAll('.report-menu-items button');
+		  const anyVisible = [...items].some(i => i.style.display !== 'none');
+
+		  parentMenu.style.display = anyVisible ? 'block' : 'none';
+		  parentMenu.classList.toggle('open', anyVisible); // expand matched
+		}
+	  });
+	});
+	// === Split Screen Logic ===
+	let splitMode = false;
+	let activeFrame = "left"; // default controlled side
+
+	const leftBtn = document.getElementById('leftControlBtn');
+	const rightBtn = document.getElementById('rightControlBtn');
+	const compareBtn = document.getElementById('toggleCompareBtn');
+	const resetBtn = document.getElementById('resetSplitBtn');
+
+	compareBtn.addEventListener('click', () => {
+	  const container = document.getElementById('reportFramesContainer');
+	  const frame2 = document.getElementById('reportFrame2');
+	  splitMode = !splitMode;
+
+	  if (splitMode) {
+		container.classList.add('split');
+		frame2.style.display = 'block';
+		showControlButtons();
+		resetBtn.style.display = 'inline-block';
+		alert("✅ Split view enabled.\nClick 🔒 Locked to make that side active.");
+	  } else {
+		container.classList.remove('split');
+		frame2.style.display = 'none';
+		hideControlButtons();
+		resetBtn.style.display = 'none';
+	  }
+	});
+
+	function showControlButtons() {
+	  leftBtn.style.display = 'inline-block';
+	  rightBtn.style.display = 'inline-block';
+	  updateControlButtons();
+	}
+	function hideControlButtons() {
+	  leftBtn.style.display = 'none';
+	  rightBtn.style.display = 'none';
+	}
+
+	function updateControlButtons() {
+	  if (activeFrame === "left") {
+		leftBtn.innerText = "🟢 Control";
+		leftBtn.classList.remove("locked");
+		rightBtn.innerText = "🔒 Locked";
+		rightBtn.classList.add("locked");
+	  } else {
+		rightBtn.innerText = "🟢 Control";
+		rightBtn.classList.remove("locked");
+		leftBtn.innerText = "🔒 Locked";
+		leftBtn.classList.add("locked");
+	  }
+	}
+
+	leftBtn.addEventListener('click', () => {
+	  activeFrame = "left";
+	  updateControlButtons();
+	});
+	rightBtn.addEventListener('click', () => {
+	  activeFrame = "right";
+	  updateControlButtons();
+	});
+
+// === Reset Split View ===
+resetBtn.addEventListener('click', () => {
+  const iframe1 = document.getElementById('reportFrame');
+  const iframe2 = document.getElementById('reportFrame2');
+  const container = document.getElementById('reportFramesContainer');
+
+  // Determine which report is currently active
+  let currentReportUrl =
+    activeFrame === "left" ? iframe1.src : iframe2.src;
+
+  // Apply the active report to main view
+  iframe1.src = currentReportUrl;
+
+  // Hide second frame and exit split view
+  iframe2.style.display = "none";
+  container.classList.remove("split");
+
+  // Hide controls and reset internal states
+  leftBtn.style.display = "none";
+  rightBtn.style.display = "none";
+  resetBtn.style.display = "none";
+  splitMode = false;
+  activeFrame = "left";
+
+  alert("✅ Returned to single view (kept the active report).");
+});
+
+
+	function reportLoadReport(reportUrl, button, title) {
+	  const iframe1 = document.getElementById('reportFrame');
+	  const iframe2 = document.getElementById('reportFrame2');
+	  const errorMessage = document.getElementById('reportErrorMessage');
+	  const buttons = document.querySelectorAll('.report-sidebar button');
+
+	  document.getElementById('loadingIndicator').style.display = 'block';
+	  errorMessage.style.display = 'none';
+
+	  if (splitMode) {
+		if (activeFrame === "left") iframe1.src = reportUrl;
+		else iframe2.src = reportUrl;
+	  } else {
+		iframe1.src = reportUrl;
+	  }
+
+	  if (button) {
+		buttons.forEach(btn => btn.classList.remove('active'));
+		button.classList.add('active');
+	  }
+
+	  document.title = title;
+	}
+
+	function hideLoading() {
+	  document.getElementById('loadingIndicator').style.display = 'none';
+	}
+	function reportShowErrorMessage() {
+	  document.getElementById('reportErrorMessage').style.display = 'block';
+	}
+// === Dashboard Updates Popup Logic ===
+document.addEventListener('DOMContentLoaded', () => {
+  const showUpdatesBtn = document.getElementById('showUpdatesBtn');
+  const updatesOverlay = document.getElementById('updatesOverlay');
+  const closeUpdatesBtn = document.getElementById('closeUpdatesBtn');
+
+  // Function to show popup
+  function showUpdates() {
+    updatesOverlay.style.display = 'flex';
+    localStorage.setItem('lastUpdatePopupShown', new Date().toDateString());
   }
-}
 
-
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      sidebar.classList.toggle('collapsed');
-    }
-
-    function reportLoadReport(reportUrl, button, title) {
-      const iframe = document.getElementById('reportFrame');
-      const errorMessage = document.getElementById('reportErrorMessage');
-      const buttons = document.querySelectorAll('.report-sidebar button');
-
-      document.getElementById('loadingIndicator').style.display = 'block';
-      errorMessage.style.display = 'none';
-      iframe.src = reportUrl;
-
-      if (button) {
-        buttons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-      }
-
-      document.title = title;
-    }
-
-    function hideLoading() {
-      document.getElementById('loadingIndicator').style.display = 'none';
-    }
-
-    function reportShowErrorMessage() {
-      const errorMessage = document.getElementById('reportErrorMessage');
-      errorMessage.style.display = 'block';
-    }
-
-    document.getElementById('feedbackLink').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        this.click();
-      }
-    });
-  document.querySelectorAll('.report-menu-header').forEach(header => {
-  header.addEventListener('click', () => {
-    const menu = header.parentElement;
-    const allMenus = document.querySelectorAll('.report-menu');
-    allMenus.forEach(m => {
-      if (m !== menu) m.classList.remove('open');
-    });
-    menu.classList.toggle('open');
-  });
-});
-	  
-	  window.addEventListener('DOMContentLoaded', () => {
-  const lastAuthTime = localStorage.getItem('dashboardAuthTime');
-  const now = new Date().getTime();
-  const sixtyMinutes = 60 * 60 * 1000;
-
-  if (lastAuthTime && (now - parseInt(lastAuthTime) < sixtyMinutes)) {
-    document.getElementById('reportPasswordOverlay').style.display = 'none';
+  // Function to hide popup
+  function hideUpdates() {
+    updatesOverlay.style.display = 'none';
   }
-});
-document.getElementById('menuSearchInput').addEventListener('input', function () {
-  const searchValue = this.value.toLowerCase();
-  const buttons = document.querySelectorAll('.report-sidebar button');
 
-  buttons.forEach(btn => {
-    const text = btn.textContent.toLowerCase();
-    const parentMenu = btn.closest('.report-menu');
-    const isMatch = text.includes(searchValue);
+  // Event listeners for buttons
+  if (showUpdatesBtn) {
+    showUpdatesBtn.addEventListener('click', showUpdates);
+  }
+  if (closeUpdatesBtn) {
+    closeUpdatesBtn.addEventListener('click', hideUpdates);
+  }
+  if (updatesOverlay) {
+    updatesOverlay.addEventListener('click', (e) => {
+      if (e.target === updatesOverlay) hideUpdates();
+    });
+  }
 
-    // Show or hide button based on match
-    btn.style.display = isMatch ? 'flex' : 'none';
+  // === Auto-show logic: once per day AFTER login ===
+  const lastShown = localStorage.getItem('lastUpdatePopupShown');
+  const today = new Date().toDateString();
 
-    // Also show/hide submenu containers and their headers if needed
-    if (parentMenu && parentMenu.classList.contains('report-menu')) {
-      const items = parentMenu.querySelectorAll('.report-menu-items button');
-      const anyVisible = [...items].some(i => i.style.display !== 'none');
-
-      parentMenu.style.display = anyVisible ? 'block' : 'none';
-      parentMenu.classList.toggle('open', anyVisible); // expand matched
+  const checkLoginInterval = setInterval(() => {
+    const passwordOverlay = document.getElementById('reportPasswordOverlay');
+    if (passwordOverlay && passwordOverlay.style.display === 'none') {
+      clearInterval(checkLoginInterval);
+      if (lastShown !== today) {
+        setTimeout(showUpdates, 800); // small delay for smoother UX
+      }
     }
-  });
+  }, 500);
 });
 
-</script>
-</body>
-</html>
+
+	</script>
+		<!-- === What's New Popup === -->
+<div id="updatesOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9998; justify-content:center; align-items:center;">
+  <div style="background:white; color:#220639; width:90%; max-width:600px; padding:20px; border-radius:10px; position:relative; text-align:left;">
+  <h2 style="margin-top:0; color:#220639;">🚀 What's New in the Dashboard</h2>
+<p style="font-size:15px; line-height:1.6;">
+  <strong>🔹 Split-Screen Comparison Mode:</strong><br>
+  You can now open and compare two reports side-by-side using the <b>“Compare Reports”</b> button.  
+  This new layout makes it easier to identify performance trends, cross-check insights, and review KPIs from different dashboards simultaneously — all without switching tabs.
+</p>
+
+<ul style="font-size:15px; line-height:1.6; margin-top:5px;">
+  <li>Click <b>“Compare Reports”</b> to enter split mode — two panels will appear side by side.</li>
+  <li>The <b>🟢 Control</b> label shows which panel is active (receives the next report you select).</li>
+  <li>The opposite panel displays <b>🔒 Locked</b>, meaning it remains fixed for reference.</li>
+  <li>Click the floating buttons to toggle between <b>active</b> and <b>locked</b> sides at any time.</li>
+  <li>When finished comparing, click <b>“Reset Split View”</b> to return to a single full-screen report — your active view stays visible.</li>
+</ul>
+
+<p style="font-size:15px; line-height:1.6;">
+  <strong>💡 Advantages:</strong><br>
+  - Instantly compare data across different product lines, or marketing activities.<br>
+  - Reduce time spent flipping between dashboards.<br>
+  - Keep critical metrics in view while exploring another report.<br>
+</p>
+
+ 
+    <button id="closeUpdatesBtn" style="background:#220639; color:white; border:none; padding:8px 14px; border-radius:6px; cursor:pointer; font-weight:700; margin-top:10px;">Close</button>
+  </div>
+</div>
+
+
+	</body>
+	</html>
